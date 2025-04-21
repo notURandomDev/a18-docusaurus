@@ -1,0 +1,150 @@
+import MdxFigure from "../../src/components/MdxFigure";
+
+# 使用说明
+
+## 资源展示
+
+在首页、参会指南等一级界面中，您可以预览与会议相关的资源。
+
+在「我的」界面中，您可以看到个人资料的展示，以及与您相关的历史记录。
+
+## 会议空间
+
+在主页中，选择任意一张视频卡片进行点击，应用会跳转至会议空间中。
+
+<MdxFigure src={require("./img/1.jpeg").default} desc={"视频卡片"} />
+
+在会议空间的界面中，您不但可以获取与会议相关的基本信息，如会议的时间、议程等；还能够快速访问到由智能体提取的会议精华，如章节速览、要点回顾等信息。
+
+除此之外，您还可以在「推荐」功能中看到智能体提供的直播和回放推荐，使您能够快速访问到相关的会议。
+
+### 视频控制
+
+进入会议空间之后，界面的上方是视频播放器。可以通过点击视频播放器，唤醒视频控件。通过拖拽控件下方的进度条，可以进行视频定位操作。
+
+<div className="row row--no-gutters">
+  <div className="col">
+    <MdxFigure src={require("./img/2.jpeg").default} desc={"视频控件-未唤醒"} />
+  </div>
+  <div className="col">
+    <MdxFigure src={require("./img/3.jpeg").default} desc={"视频控件-已唤醒"} />
+  </div>
+</div>
+
+### 功能分级
+
+在视频标题下方，可以看到会议空间的五大功能：详情、摘要、笔记、推荐、聊天。
+
+每个主功能，又有相应的子功能。您可以通过左右划动或者点击标签 Tab，来切换不同的子功能；在主功能下，您可以通过点击按钮，来切换不同的子功能。
+
+<MdxFigure src={require("./img/4.png").default} desc={"主功能与子功能"} />
+
+### 实时转写
+
+在「摘要 - 实时转写」功能中，您可以看到会议实时转写的段落。此处，如果您成功部署并启动了后端服务器，该界面的实时转写段落会动态更新。
+
+通过点击转录段落，您可以直接跳转到视频相应的时间点，无需手动拖拽。
+
+<MdxFigure src={require("./img/5.jpeg").default} desc={"转录段落-可点击"} />
+
+长按转录段落之后，菜单控件弹出。您可以根据自己对于该转录文本的理解，进行标记，以便会议后快捷访问。
+
+这里需要注意的是，有一小部分转录段落，在用户手动添加标记之前，就已经被自动标记。这是因为智能体会对转录数据进行「重点」和「代办」的提取，以便用户在海量的转录段落中快速定位会议的重要内容，提升参会效率。
+
+<div className="row row--no-gutters">
+  <div className="col">
+    <MdxFigure src={require("./img/6.jpeg").default} desc={"转录段落-长按"} />
+  </div>
+  <div className="col">
+    <MdxFigure src={require("./img/7.jpeg").default} desc={"转录段落-已标记"} />
+  </div>
+</div>
+
+转录段落中被标为蓝色的词语，大多是比较专业的业内术语（黑话）。为了助力参会者更加高效地理解会议的内容，以及降低参会者搜索释义的时间成本，智能体在处理转录数据的时候，会讲转录段落中的专业术语进行解析，并提供相应的解释。
+
+您可以通过点击被标蓝的专业术语，快速查看其释义。
+
+<MdxFigure src={require("./img/8.jpeg").default} desc={"知识卡片"} />
+
+### 实时聊天
+
+在会议空间的实时聊天功能中，您可以发送自己对于会议的见解。
+
+<MdxFigure
+  src={require("./img/9.jpeg").default}
+  desc={"会议实时聊天-被蓝色边框高亮的是您发送的消息"}
+/>
+
+## 智能对话
+
+点击始终悬浮在应用右侧的安小恒 Logo，进入智能问答界面。
+
+在底部的输入框输入你的问题，点击纸飞机图标发送，即可与安小恒进行问答互动。
+
+<MdxFigure src={require("./img/10.jpeg").default} desc={"输入框"} />
+在发送你的问题之后，安小恒会进行一系列阶段的思考；您可以实时观察到安小恒所处于的思考阶段。
+
+<MdxFigure src={require("./img/11.png").default} desc={"检测阶段"} />
+如果您想在冗长的历史聊天记录中快速回到底部，可以点击聊天界面中悬浮的箭头，返回界面底部。
+
+<MdxFigure src={require("./img/12.jpeg").default} desc={"快捷键"} />
+
+安小恒不仅会针对您提出的问题给出精准的回答，如果问题与会议相关，安小恒还会基于问题为您推荐相应的会议资源。
+
+如果您在会议空间外，对安小恒发出提问，安小恒会在回答末尾为您附上推荐参加的会议；如果是在会议空间内，那么安小恒能够感知您正在参与的会议，并提供相应的转录链接，供您一键跳转至视频相应的位置。
+
+<div className="row row--no-gutters">
+  <div className="col">
+    <MdxFigure
+      src={require("./img/13.jpeg").default}
+      desc={"会议空间外：推荐会议"}
+    />
+  </div>
+  <div className="col">
+    <MdxFigure
+      src={require("./img/14.jpeg").default}
+      desc={"会议空间内：推荐转录内容"}
+    />
+  </div>
+</div>
+
+## 智能笔记
+
+### 标签分类
+
+在标签分类模块中，您可以看到以标签为单位整理好的笔记。这些笔记，对应您在会议空间中标记的转写段落。
+
+点击右侧的箭头，能够展开该标签下的所有笔记。
+
+<MdxFigure src={require("./img/15.jpeg").default} desc={"标签分类"} />
+
+### 我的笔记
+
+在我的笔记模块中，您可以创建自定义的笔记，并对笔记进行置顶、分类、编辑、删除等操作。
+
+点击界面最下方的「新建笔记」按钮，新建您的个人笔记。
+
+<MdxFigure src={require("./img/16.jpeg").default} desc={"按钮-新建笔记"} />
+
+对于列表中的笔记，您可以通过左划笔记项，对笔记进行一系列自定义操作。
+
+<div className="row row--no-gutters">
+  <div className="col">
+    <MdxFigure src={require("./img/17.jpeg").default} desc={"笔记项"} />
+  </div>
+  <div className="col">
+    <MdxFigure src={require("./img/18.png").default} desc={"笔记操作"} />
+  </div>
+</div>
+
+## 智能搜索
+
+在主页中，点击页面最上方 Tabbar 右侧的放大镜按钮，进入智能搜索界面查找会议。
+
+<MdxFigure src={require("./img/19.jpeg").default} desc={"按钮-智能搜索入口"} />
+
+在界面上方的输入框中输入您想查询的关键字之后，检索列表中会显示最接近的匹配结果，并将您输入的关键字高亮处理。
+
+点击检索推荐项之后，应用将会跳转至检索结果界面。
+
+<MdxFigure src={require("./img/20.jpeg").default} desc={"检索列表"} />
