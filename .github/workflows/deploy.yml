@@ -29,52 +29,56 @@ jobs:
           npm config set registry https://registry.npmmirror.com
           npm ci
           npm run build
-          ls -la build/  # 调试：输出 build 文件夹内容
+          ls -la build/
           if [ ! -f build/index.html ]; then
-            echo "Error: build/index.html not found"
+            echo "❌ Error: build/index.html not found"
             exit 1
           fi
 
-          - name: Deploy to Tencent COS
-          env:
-            COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
-            COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
-            COS_BUCKET: a18-doc-1340028816
-            COS_REGION: ap-shanghai
-          run: |
-            pip install coscmd -i https://mirrors.tencent.com/pypi/simple
+      - name: Deploy to Tencent COS
+        env:
+          COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+          COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+          COS_BUCKET: a18-doc-1340028816
+          COS_REGION: ap-shanghai
+        run: |
+          # 安装 coscmd
+          pip install coscmd -i https://mirrors.tencent.com/pypi/simple
 
-            # 检查变量
-            echo "Checking secrets..."
-            echo "COS_SECRET_ID=${COS_SECRET_ID:0:4}***"
-            echo "COS_SECRET_KEY=${COS_SECRET_KEY:0:4}***"
-            echo "COS_BUCKET=$COS_BUCKET"
-            echo "COS_REGION=$COS_REGION"
+          # 检查变量是否正确传入
+          echo "🔐 Checking secrets..."
+          echo "COS_SECRET_ID=${COS_SECRET_ID:0:4}***"
+          echo "COS_SECRET_KEY=${COS_SECRET_KEY:0:4}***"
+          echo "COS_BUCKET=$COS_BUCKET"
+          echo "COS_REGION=$COS_REGION"
 
-            # 提前失败（防止参数为空）
-            if [ -z "$COS_SECRET_ID" ] || [ -z "$COS_SECRET_KEY" ] || [ -z "$COS_BUCKET" ] || [ -z "$COS_REGION" ]; then
-              echo "❌ Missing required environment variables"
-              exit 1
-            fi
+          if [ -z "$COS_SECRET_ID" ] || [ -z "$COS_SECRET_KEY" ] || [ -z "$COS_BUCKET" ] || [ -z "$COS_REGION" ]; then
+            echo "❌ Missing required environment variables"
+            exit 1
+          fi
 
-            # 配置 coscmd
-            coscmd config -a "$COS_SECRET_ID" -s "$COS_SECRET_KEY" -b "$COS_BUCKET" -r "$COS_REGION"
+          # 配置 coscmd
+          echo "⚙️ Configuring coscmd..."
+          coscmd config -a "$COS_SECRET_ID" -s "$COS_SECRET_KEY" -b "$COS_BUCKET" -r "$COS_REGION"
 
-            # 设置 MIME 类型
-            coscmd config mime .html text/html
-            coscmd config mime .css text/css
-            coscmd config mime .js application/javascript
-            coscmd config mime .json application/json
-            coscmd config mime .ico image/x-icon
-            coscmd config mime .svg image/svg+xml
-            coscmd config mime .jpg image/jpeg
-            coscmd config mime .jpeg image/jpeg
-            coscmd config mime .png image/png
-            coscmd config mime .txt text/plain
-            coscmd config mime .xml application/xml
+          # 设置常见 MIME 类型
+          echo "🛠️ Setting MIME types..."
+          coscmd config mime .html text/html
+          coscmd config mime .css text/css
+          coscmd config mime .js application/javascript
+          coscmd config mime .json application/json
+          coscmd config mime .ico image/x-icon
+          coscmd config mime .svg image/svg+xml
+          coscmd config mime .jpg image/jpeg
+          coscmd config mime .jpeg image/jpeg
+          coscmd config mime .png image/png
+          coscmd config mime .txt text/plain
+          coscmd config mime .xml application/xml
 
-            # 上传文件
-            coscmd upload -rs --delete -y ./build/ /
+          # 上传构建文件夹内容
+          echo "🚀 Uploading files to COS..."
+          coscmd upload -rs --delete -y ./build/ /
 
-            # 查看上传结果
-            coscmd list /
+          # 输出上传后的文件列表
+          echo "📂 Upload complete. Listing COS root:"
+          coscmd list /
