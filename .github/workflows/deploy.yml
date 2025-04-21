@@ -1,0 +1,53 @@
+name: Deploy Docusaurus to Tencent COS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-npm-
+
+      - name: Install Dependencies and Build
+        run: |
+          npm config set registry https://registry.npmmirror.com
+          npm ci
+          npm run build
+          ls -la build/  # 调试：输出 build 文件夹内容
+          if [ ! -f build/index.html ]; then
+            echo "Error: build/index.html not found"
+            exit 1
+          fi
+
+      - name: Deploy to Tencent COS
+        env:
+          COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+          COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+          COS_BUCKET: a18-doc-1340028816
+          COS_REGION: ap-shanghai
+        run: |
+          pip install coscmd -i https://mirrors.tencent.com/pypi/simple
+          echo "COS_SECRET_ID is set to: ${COS_SECRET_ID:0:4}..."  # 调试：部分显示密钥
+          if [ -z "$COS_SECRET_ID" ] || [ -z "$COS_SECRET_KEY" ]; then
+            echo "Error: COS_SECRET_ID or COS_SECRET_KEY is empty"
+            exit 1
+          fi
+          coscmd config -a $COS_SECRET_ID -s $COS_SECRET_KEY -b $COS_BUCKET -r $COS_REGION
+          coscmd upload -rs --delete -y --headers '{"*.html":{"Content-Type":"text/html","Content-Disposition":"inline"},"*.css":"text/css","*.js":"application/javascript","*.png":"image/png","*.jpg":"image/jpeg","*.ico":"image/x-icon","*.svg":"image/svg+xml"}' ./build/ /
+          coscmd list /  # 调试：输出上传后的文件列表
