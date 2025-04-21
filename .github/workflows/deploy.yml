@@ -54,14 +54,16 @@ jobs:
             exit 1
           fi
           coscmd config -a $COS_SECRET_ID -s $COS_SECRET_KEY -b $COS_BUCKET -r $COS_REGION
-          coscmd upload -rs --delete -y --headers '{
-            "*.html": {"Content-Type": "text/html", "Content-Disposition": "inline", "Cache-Control": "max-age=3600"},
-            "*.css": {"Content-Type": "text/css", "Cache-Control": "max-age=31536000"},
-            "*.js": {"Content-Type": "application/javascript", "Cache-Control": "max-age=31536000"},
-            "*.png": {"Content-Type": "image/png", "Cache-Control": "max-age=31536000"},
-            "*.jpg": {"Content-Type": "image/jpeg", "Cache-Control": "max-age=31536000"},
-            "*.ico": {"Content-Type": "image/x-icon", "Cache-Control": "max-age=31536000"},
-            "*.svg": {"Content-Type": "image/svg+xml", "Cache-Control": "max-age=31536000"}
-          }' ./build/ /
+          # 上传 HTML 文件，单独设置 headers
+          coscmd upload -rs --delete -y --headers "Content-Type=text/html Content-Disposition=inline Cache-Control=max-age=3600" ./build/*.html /
+          # 上传其他文件，分类型设置 headers
+          coscmd upload -rs -y --headers "Content-Type=text/css Cache-Control=max-age=31536000" ./build/**/*.css /
+          coscmd upload -rs -y --headers "Content-Type=application/javascript Cache-Control=max-age=31536000" ./build/**/*.js /
+          coscmd upload -rs -y --headers "Content-Type=image/png Cache-Control=max-age=31536000" ./build/**/*.png /
+          coscmd upload -rs -y --headers "Content-Type=image/jpeg Cache-Control=max-age=31536000" ./build/**/*.jpg /
+          coscmd upload -rs -y --headers "Content-Type=image/x-icon Cache-Control=max-age=31536000" ./build/**/*.ico /
+          coscmd upload -rs -y --headers "Content-Type=image/svg+xml Cache-Control=max-age=31536000" ./build/**/*.svg /
+          # 上传剩余文件（无特定 headers）
+          coscmd upload -rs -y ./build/ /
           coscmd list /  # 调试：输出上传文件列表
           coscmd info /index.html  # 调试：输出 index.html 元数据
