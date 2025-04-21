@@ -29,7 +29,7 @@ jobs:
           npm config set registry https://registry.npmmirror.com
           npm ci
           npm run build
-          ls -la build/  # 调试：输出 build 文件夹内容
+          ls -la build/
           if [ ! -f build/index.html ]; then
             echo "Error: build/index.html not found"
             exit 1
@@ -42,12 +42,34 @@ jobs:
           COS_BUCKET: a18-doc-1340028816
           COS_REGION: ap-shanghai
         run: |
+          # 安装 coscmd
           pip install coscmd -i https://mirrors.tencent.com/pypi/simple
-          echo "COS_SECRET_ID is set to: ${COS_SECRET_ID:0:4}..."  # 调试：部分显示密钥
+
+          # 检查密钥
+          echo "COS_SECRET_ID is set to: ${COS_SECRET_ID:0:4}..."
           if [ -z "$COS_SECRET_ID" ] || [ -z "$COS_SECRET_KEY" ]; then
             echo "Error: COS_SECRET_ID or COS_SECRET_KEY is empty"
             exit 1
           fi
+
+          # 配置 coscmd
           coscmd config -a $COS_SECRET_ID -s $COS_SECRET_KEY -b $COS_BUCKET -r $COS_REGION
-          coscmd upload -rs --delete -y --headers '{"*.html":{"Content-Type":"text/html","Content-Disposition":"inline"},"*.css":"text/css","*.js":"application/javascript","*.png":"image/png","*.jpg":"image/jpeg","*.ico":"image/x-icon","*.svg":"image/svg+xml"}' ./build/ /
-          coscmd list /  # 调试：输出上传后的文件列表
+
+          # 设置 MIME 类型
+          coscmd config mime .html text/html
+          coscmd config mime .css text/css
+          coscmd config mime .js application/javascript
+          coscmd config mime .json application/json
+          coscmd config mime .ico image/x-icon
+          coscmd config mime .svg image/svg+xml
+          coscmd config mime .jpg image/jpeg
+          coscmd config mime .jpeg image/jpeg
+          coscmd config mime .png image/png
+          coscmd config mime .txt text/plain
+          coscmd config mime .xml application/xml
+
+          # 上传文件
+          coscmd upload -rs --delete -y ./build/ /
+
+          # 查看上传结果
+          coscmd list /
