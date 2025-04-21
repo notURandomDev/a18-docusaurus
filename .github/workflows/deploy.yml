@@ -63,17 +63,17 @@ jobs:
 
           # 设置常见 MIME 类型
           echo "🛠️ Setting MIME types..."
-          coscmd config mime .html text/html
-          coscmd config mime .css text/css
-          coscmd config mime .js application/javascript
-          coscmd config mime .json application/json
-          coscmd config mime .ico image/x-icon
-          coscmd config mime .svg image/svg+xml
-          coscmd config mime .jpg image/jpeg
-          coscmd config mime .jpeg image/jpeg
-          coscmd config mime .png image/png
-          coscmd config mime .txt text/plain
-          coscmd config mime .xml application/xml
+          coscmd configmime .html text/html
+          coscmd configmime .css text/css
+          coscmd configmime .js application/javascript
+          coscmd configmime .json application/json
+          coscmd configmime .ico image/x-icon
+          coscmd configmime .svg image/svg+xml
+          coscmd configmime .jpg image/jpeg
+          coscmd configmime .jpeg image/jpeg
+          coscmd configmime .png image/png
+          coscmd configmime .txt text/plain
+          coscmd configmime .xml application/xml
 
           # 上传构建文件夹内容
           echo "🚀 Uploading files to COS..."
