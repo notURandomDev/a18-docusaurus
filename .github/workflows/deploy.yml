@@ -3,6 +3,7 @@ name: Deploy Docusaurus to Tencent COS
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -49,5 +50,5 @@ jobs:
             exit 1
           fi
           coscmd config -a $COS_SECRET_ID -s $COS_SECRET_KEY -b $COS_BUCKET -r $COS_REGION
-          coscmd upload -rs --delete -y --headers '{"*.html":{"Content-Type":"text/html","Content-Disposition":"inline"},"*.css":"text/css","*.js":"application/javascript","*.png":"image/png","*.jpg":"image/jpeg","*.ico":"image/x-icon","*.svg":"image/svg+xml"}' ./build/ /
+          coscmd upload -rs --delete -y --headers "{\"*.html\": {\"Content-Type\": \"text/html\", \"Content-Disposition\": \"inline\"}, \"*.css\": {\"Content-Type\": \"text/css\"}, \"*.js\": {\"Content-Type\": \"application/javascript\"}, \"*.png\": {\"Content-Type\": \"image/png\"}, \"*.jpg\": {\"Content-Type\": \"image/jpeg\"}, \"*.ico\": {\"Content-Type\": \"image/x-icon\"}, \"*.svg\": {\"Content-Type\": \"image/svg+xml\"}}" ./build/ /
           coscmd list /  # 调试：输出上传后的文件列表
