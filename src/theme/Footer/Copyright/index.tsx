@@ -1,5 +1,6 @@
 import React, { type ReactNode } from "react";
 import type { Props } from "@theme/Footer/Copyright";
+import Link from "@docusaurus/Link";
 
 export default function FooterCopyright({ copyright }: Props): ReactNode {
   return (
@@ -11,7 +12,7 @@ export default function FooterCopyright({ copyright }: Props): ReactNode {
       <p>
         {copyright}
         <span>
-          ｜ 网站借助 <a href="https://docusaurus.io/">Docusaurus</a> 构建
+          ｜ 网站借助 <Link href="https://docusaurus.io">Docusaurus</Link> 构建
         </span>
       </p>
     </div>
